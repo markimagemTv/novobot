@@ -1,17 +1,28 @@
 import mercadopago
-from app.config import MP_ACCESS_TOKEN, BASE_URL
+import os
+from dotenv import load_dotenv
 
-sdk = mercadopago.SDK(MP_ACCESS_TOKEN)
+load_dotenv()
 
-def gerar_link_pagamento(nome_produto, valor, user_id):
+sdk = mercadopago.SDK(os.getenv("MERCADO_PAGO_ACCESS_TOKEN"))
+
+def gerar_pagamento_pix(descricao, valor, user_id):
     preference_data = {
-        "items": [{
-            "title": nome_produto,
-            "quantity": 1,
-            "unit_price": float(valor)
-        }],
-        "notification_url": f"{BASE_URL}/pagamento/webhook",
-        "external_reference": str(user_id)
+        "transaction_amount": float(valor),
+        "description": descricao,
+        "payment_method_id": "pix",
+        "payer": {
+            "email": f"user{user_id}@email.com"
+        }
     }
-    preference_response = sdk.preference().create(preference_data)
-    return preference_response["response"]["init_point"]
+
+    payment = sdk.payment().create(preference_data)
+
+    if payment["status"] == 201:
+        qr_info = payment["response"]["point_of_interaction"]["transaction_data"]
+        return {
+            "pix_code": qr_info["qr_code"],
+            "qr_image": qr_info["qr_code_base64"]
+        }
+    else:
+        return None
