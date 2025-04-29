@@ -12,17 +12,25 @@ def gerar_pagamento_pix(descricao, valor, user_id):
         "description": descricao,
         "payment_method_id": "pix",
         "payer": {
-            "email": f"user{user_id}@email.com"
-        }
+            "email": f"user{user_id}@email.com"  # Mesmo fictício, o e-mail é obrigatório
+        },
+        "notification_url": "https://seuservidor.com/notificacao"  # Opcional, mas recomendado
     }
 
-    payment = sdk.payment().create(preference_data)
+    try:
+        payment_response = sdk.payment().create(preference_data)
+        payment = payment_response["response"]
 
-    if payment["status"] == 201:
-        qr_info = payment["response"]["point_of_interaction"]["transaction_data"]
-        return {
-            "pix_code": qr_info["qr_code"],
-            "qr_image": qr_info["qr_code_base64"]
-        }
-    else:
+        if payment.get("status") == "pending":
+            qr_info = payment["point_of_interaction"]["transaction_data"]
+            return {
+                "pix_code": qr_info["qr_code"],
+                "qr_image": qr_info["qr_code_base64"]
+            }
+        else:
+            print(f"[ERRO] Status inesperado: {payment.get('status')}")
+            return None
+    except Exception as e:
+        print(f"[ERRO] Falha ao gerar pagamento PIX: {e}")
         return None
+
