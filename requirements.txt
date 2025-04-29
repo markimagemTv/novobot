@@ -1,3 +1,4 @@
 pyTelegramBotAPI
 mercadopago
 python-dotenv
+mercadopago==2.3.0
