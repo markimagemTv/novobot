@@ -27,7 +27,6 @@ def register_handlers(bot):
             valor = (quantidade // 10) * 5
             link_pagamento = gerar_link_pagamento(f"{quantidade} Créditos Fast Play", valor, call.from_user.id)
             bot.send_message(call.message.chat.id, f"Pagamento via Mercado Pago:\n{link_pagamento}")
-{link_pagamento}")
             bot.send_message(ADMIN_CHAT_ID, f"Pedido de {quantidade} créditos de @{call.from_user.username}")
 
     def receber_mac(msg: Message):
