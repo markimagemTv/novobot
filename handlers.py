@@ -18,7 +18,19 @@ def register_handlers(bot):
             bot.register_next_step_handler(call.message, receber_mac)
 
     def receber_mac(msg: Message):
-        mac = msg.text
-        link_pagamento = gerar_link_pagamento("Mega IPTV", 65.00, msg.chat.id)
-        bot.send_message(msg.chat.id, f"Clique para pagar via Mercado Pago:\n{link_pagamento}")
-        bot.send_message(ADMIN_CHAT_ID, f"Novo pedido de IPTV\nMAC: {mac}\nCliente: @{msg.from_user.username}")
+        mac = msg.text.strip().upper()
+
+        # Validação simples de MAC (opcional)
+        if not (len(mac) == 17 and all(c in "0123456789ABCDEF:-" for c in mac.upper())):
+            bot.send_message(msg.chat.id, "❌ MAC Address inválido. Tente novamente.")
+            return
+
+        try:
+            link_pagamento = gerar_link_pagamento("Mega IPTV", 65.00, msg.chat.id)
+            bot.send_message(msg.chat.id, f"💳 Clique para pagar via Mercado Pago:\n{link_pagamento}")
+
+            cliente = f"@{msg.from_user.username}" if msg.from_user.username else f"ID: {msg.from_user.id}"
+            bot.send_message(ADMIN_CHAT_ID, f"📥 Novo pedido de IPTV\nMAC: {mac}\nCliente: {cliente}")
+        except Exception as e:
+            bot.send_message(msg.chat.id, "❌ Erro ao gerar link de pagamento.")
+            print(f"[Erro gerar MAC] {e}")
