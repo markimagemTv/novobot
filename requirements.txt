@@ -1,5 +1,3 @@
 pyTelegramBotAPI
-flask
 mercadopago
-jinja2
 python-dotenv
