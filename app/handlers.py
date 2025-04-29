@@ -1,6 +1,22 @@
-from telebot.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from app.config import ADMIN_CHAT_ID
-from app.mercado_pago import gerar_link_pagamento
+from telebot.types import InputMediaPhoto
+
+# ... dentro do callback creditos_* ou receber_mac
+pagamento = gerar_pagamento_pix("Mega IPTV", 65.00, msg.chat.id)
+if pagamento:
+    pix_code = pagamento["pix_code"]
+    qr_base64 = pagamento["qr_image"]
+
+    with open("temp_qr.png", "wb") as f:
+        import base64
+        f.write(base64.b64decode(qr_base64))
+
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("✅ Copiar Código PIX", switch_inline_query=pix_code))
+
+    bot.send_photo(msg.chat.id, photo=open("temp_qr.png", "rb"), caption=f"💰 *PIX Copia e Cola:*\n\n`{pix_code}`", parse_mode="Markdown", reply_markup=markup)
+    bot.send_message(ADMIN_CHAT_ID, f"📥 Novo pedido de IPTV\nMAC: {msg.text}\nCliente: @{msg.from_user.username}")
+else:
+    bot.send_message(msg.chat.id, "Erro ao gerar pagamento PIX.")
 
 def register_handlers(bot):
 
