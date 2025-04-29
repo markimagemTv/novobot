@@ -32,8 +32,5 @@ def register_handlers(bot):
     def receber_mac(msg: Message):
         mac = msg.text
         link_pagamento = gerar_link_pagamento("Mega IPTV", 65.00, msg.chat.id)
-        bot.send_message(msg.chat.id, f"Pagamento via Mercado Pago:
-{link_pagamento}")
-        bot.send_message(ADMIN_CHAT_ID, f"Pedido de IPTV
-MAC: {mac}
-Cliente: @{msg.from_user.username}")
+        bot.send_message(msg.chat.id, f"Pagamento via Mercado Pago:\n{link_pagamento}")
+        bot.send_message(ADMIN_CHAT_ID, f"Pedido de IPTV\nMAC: {mac}\nCliente: @{msg.from_user.username}")
