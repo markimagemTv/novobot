@@ -39,9 +39,11 @@ def register_handlers(bot):
 
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("✅ Copiar Código PIX", switch_inline_query=pix_code))
+
                 bot.send_photo(call.message.chat.id, photo=open("temp_qr.png", "rb"),
                                caption=f"💳 *PIX Copia e Cola:*\n\n`{pix_code}`",
                                parse_mode="Markdown", reply_markup=markup)
+
                 bot.send_message(ADMIN_CHAT_ID, f"📥 Pedido de {quantidade} créditos de @{call.from_user.username}")
             else:
                 bot.send_message(call.message.chat.id, "❌ Erro ao gerar pagamento PIX.")
@@ -58,10 +60,11 @@ def register_handlers(bot):
 
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("✅ Copiar Código PIX", switch_inline_query=pix_code))
+
             bot.send_photo(msg.chat.id, photo=open("temp_qr.png", "rb"),
                            caption=f"💳 *PIX Copia e Cola:*\n\n`{pix_code}`",
                            parse_mode="Markdown", reply_markup=markup)
+
             bot.send_message(ADMIN_CHAT_ID, f"📥 Pedido de IPTV\nMAC: {mac}\nCliente: @{msg.from_user.username}")
         else:
             bot.send_message(msg.chat.id, "❌ Erro ao gerar pagamento PIX.")
-
