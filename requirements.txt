@@ -2,3 +2,9 @@ pyTelegramBotAPI
 mercadopago
 python-dotenv
 mercadopago==2.3.0
+python-telegram-bot==20.0
+python-dotenv
+psutil
+git_manager
+persistent_data
+
